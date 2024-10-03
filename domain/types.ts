@@ -1,3 +1,6 @@
+import { FilteredLegislationData } from "./legislation/legislation.types";
+import { OfficialOffice } from "./representatives";
+
 // Typing the .legislation.json files
 export interface CiviLegislationData {
   status: string[];
@@ -39,3 +42,25 @@ export interface CiviWikiLegislationData {
 export const locales = ["chicago", "illinois", "usa"] as const;
 
 export type Locales = (typeof locales)[number];
+
+export type FeedData = {
+  fullLegislation: WindyCiviBill[];
+  filteredLegislation: WindyCiviBill[];
+  offices: OfficialOffice[] | null;
+};
+
+export interface WindyCiviBill extends FilteredLegislationData {
+  // String that is the name of the rep that sponsored the bill
+  // note: this should become a OfficialOffice object
+  sponsoredByRep?: string | false;
+}
+
+export interface DataStoreGetter {
+  getLegislationData: (locale: Locales) => Promise<CiviLegislationData[]>;
+  getGptLegislation: (locale: Locales) => Promise<CiviGptLegislationData>;
+  locales: typeof locales;
+}
+
+export type Env = {
+  GOOGLE_API_KEY: string;
+};
